@@ -59,7 +59,7 @@ GRANT ALL PRIVILEGES ON DATABASE church_app_db TO church_user;
 ALTER DATABASE church_app_db OWNER TO church_user;
 ```
 
-The default local config in `/Users/yormen/Documents/Personal/Church Anglican/church-app/backend/src/main/resources/application.properties` expects:
+The default local config in `church-app/backend/src/main/resources/application.properties` expects:
 
 - database: `church_app_db`
 - username: `church_user`
@@ -72,7 +72,7 @@ Default backend port:
 
 - `8081`
 
-Important properties in `/Users/yormen/Documents/Personal/Church Anglican/church-app/backend/src/main/resources/application.properties`:
+Important properties in `church-app/backend/src/main/resources/application.properties`:
 
 - `server.port=8081`
 - `spring.datasource.url=jdbc:postgresql://localhost:5432/church_app_db`
@@ -87,7 +87,7 @@ For any non-local environment, change the JWT secret before starting the app.
 
 ### 4. Run the backend
 
-From `/Users/yormen/Documents/Personal/Church Anglican/church-app/backend`:
+From `church-app/backend`:
 
 ```bash
 ./mvnw spring-boot:run
@@ -106,7 +106,7 @@ Flyway runs automatically on startup.
 
 Current migration directory:
 
-- `/Users/yormen/Documents/Personal/Church Anglican/church-app/backend/src/main/resources/db/migration`
+- `church-app/backend/src/main/resources/db/migration`
 
 Current schema includes the access identifier changes and seeded access model.
 
@@ -153,7 +153,7 @@ Authorities are derived from:
 
 ## Main Development Commands
 
-From `/Users/yormen/Documents/Personal/Church Anglican/church-app/backend`:
+From `church-app/backend`:
 
 Run tests:
 
