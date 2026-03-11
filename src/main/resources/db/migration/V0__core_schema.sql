@@ -1,0 +1,33 @@
+CREATE TABLE IF NOT EXISTS churches (
+    id UUID PRIMARY KEY,
+    name VARCHAR(255) NOT NULL UNIQUE,
+    address VARCHAR(255),
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS persons (
+    id UUID PRIMARY KEY,
+    full_name VARCHAR(255) NOT NULL,
+    first_name VARCHAR(255) NOT NULL,
+    last_name VARCHAR(255) NOT NULL,
+    preferred_name VARCHAR(255),
+    gender VARCHAR(32),
+    date_of_birth TIMESTAMP,
+    phone_number VARCHAR(255) UNIQUE,
+    email_address VARCHAR(255) UNIQUE,
+    address VARCHAR(255),
+    emergency_contact VARCHAR(255),
+    marital_status VARCHAR(32),
+    status VARCHAR(32) NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS permissions (
+    id UUID PRIMARY KEY,
+    name VARCHAR(255) NOT NULL UNIQUE,
+    description VARCHAR(255),
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);

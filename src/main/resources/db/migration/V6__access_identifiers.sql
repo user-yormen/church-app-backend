@@ -1,0 +1,5 @@
+ALTER TABLE permissions
+    ADD COLUMN IF NOT EXISTS identifier VARCHAR(64);
+
+ALTER TABLE app_roles
+    ADD COLUMN IF NOT EXISTS identifier VARCHAR(64);
