@@ -68,6 +68,22 @@ public class MembershipServiceImpl implements MembershipService {
         return historyRepository.findByMembershipId(membershipId, pageable);
     }
 
+    @Override
+    public Page<ChurchMembership> list(UUID churchId, String query, ChurchMembership.MembershipStatus status, ChurchMembership.MembershipType type, Pageable pageable) {
+        return churchMembershipRepository.search(churchId, query, status, type, pageable);
+    }
+
+    @Override
+    public ChurchMembership findById(UUID membershipId) {
+        return churchMembershipRepository.findById(membershipId)
+                .orElseThrow(() -> new NotFoundException("Membership not found with id: " + membershipId));
+    }
+
+    @Override
+    public void delete(UUID membershipId) {
+        churchMembershipRepository.delete(findById(membershipId));
+    }
+
     private void recordHistory(ChurchMembership membership, ChurchMembership.MembershipStatus status, String reason, UUID changedByPersonId, LocalDateTime effectiveDate) {
         MembershipStatusHistory history = new MembershipStatusHistory();
         history.setMembership(membership);

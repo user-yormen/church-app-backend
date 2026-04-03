@@ -42,6 +42,23 @@ public class MembershipController {
         return ResponseEntity.ok(toMembershipResponse(membership));
     }
 
+    @GetMapping("/{membershipId}")
+    public ResponseEntity<MembershipResponse> getById(@PathVariable UUID membershipId) {
+        return ResponseEntity.ok(toMembershipResponse(membershipService.findById(membershipId)));
+    }
+
+    @GetMapping
+    public ResponseEntity<Page<MembershipResponse>> list(
+            @RequestParam UUID churchId,
+            @RequestParam(required = false) String q,
+            @RequestParam(required = false) ChurchMembership.MembershipStatus status,
+            @RequestParam(required = false) ChurchMembership.MembershipType type,
+            @PageableDefault(size = 20) Pageable pageable
+    ) {
+        Page<ChurchMembership> memberships = membershipService.list(churchId, q, status, type, pageable);
+        return ResponseEntity.ok(memberships.map(this::toMembershipResponse));
+    }
+
     @GetMapping("/{membershipId}/history")
     public ResponseEntity<Page<MembershipStatusHistoryResponse>> history(
             @PathVariable UUID membershipId,
@@ -51,11 +68,20 @@ public class MembershipController {
         return ResponseEntity.ok(mapHistoryPage(history));
     }
 
+    @DeleteMapping("/{membershipId}")
+    public ResponseEntity<Void> delete(@PathVariable UUID membershipId) {
+        membershipService.delete(membershipId);
+        return ResponseEntity.noContent().build();
+    }
+
     private MembershipResponse toMembershipResponse(ChurchMembership membership) {
         MembershipResponse response = new MembershipResponse();
         response.setId(membership.getId());
         response.setPersonId(membership.getPerson() != null ? membership.getPerson().getId() : null);
         response.setChurchId(membership.getChurch() != null ? membership.getChurch().getId() : null);
+        response.setPersonName(membership.getPerson() != null ? membership.getPerson().getFullName() : null);
+        response.setPersonEmailAddress(membership.getPerson() != null ? membership.getPerson().getEmailAddress() : null);
+        response.setPersonPhoneNumber(membership.getPerson() != null ? membership.getPerson().getPhoneNumber() : null);
         response.setJoinDate(membership.getJoinDate());
         response.setLeaveDate(membership.getLeaveDate());
         response.setStatus(membership.getStatus());

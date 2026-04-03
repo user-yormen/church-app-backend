@@ -9,4 +9,6 @@ import java.util.UUID;
 public interface GroupMemberService {
     GroupMember add(GroupMember member);
     Page<GroupMember> list(UUID groupId, UUID personId, GroupMember.MemberStatus status, GroupMember.DuesStatus duesStatus, Pageable pageable);
+    GroupMember update(UUID groupId, UUID memberId, GroupMember member);
+    void delete(UUID groupId, UUID memberId);
 }

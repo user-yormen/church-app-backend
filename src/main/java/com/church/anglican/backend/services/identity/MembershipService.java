@@ -13,4 +13,7 @@ public interface MembershipService {
     ChurchMembership create(CreateMembershipRequest request);
     ChurchMembership updateStatus(UUID membershipId, UpdateMembershipStatusRequest request);
     Page<MembershipStatusHistory> history(UUID membershipId, Pageable pageable);
+    Page<ChurchMembership> list(UUID churchId, String query, ChurchMembership.MembershipStatus status, ChurchMembership.MembershipType type, Pageable pageable);
+    ChurchMembership findById(UUID membershipId);
+    void delete(UUID membershipId);
 }

@@ -10,4 +10,6 @@ public interface GroupService {
     Group create(Group group);
     Group findById(UUID id);
     Page<Group> search(UUID churchId, String query, Group.GroupStatus status, Group.GroupType type, Pageable pageable);
+    Group update(UUID id, Group group);
+    void delete(UUID id);
 }

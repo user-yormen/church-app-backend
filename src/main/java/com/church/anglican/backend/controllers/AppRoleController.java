@@ -45,6 +45,20 @@ public class AppRoleController {
         }
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<AppRoleResponse> updateRole(
+            @PathVariable UUID id,
+            @Valid @RequestBody CreateAppRoleRequest request
+    ) {
+        return ResponseEntity.ok(toResponse(appRoleService.updateRole(id, request)));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteRole(@PathVariable UUID id) {
+        appRoleService.deleteRole(id);
+        return ResponseEntity.noContent().build();
+    }
+
     private AppRoleResponse toResponse(AppRole role) {
         AppRoleResponse response = new AppRoleResponse();
         response.setId(role.getId());
@@ -53,6 +67,10 @@ public class AppRoleController {
         response.setDescription(role.getDescription());
         response.setIdentifier(role.getIdentifier());
         response.setParentRoleId(role.getParentRole() != null ? role.getParentRole().getId() : null);
+        response.setPermissionIds(role.getPermissions().stream()
+                .map(permission -> permission.getId())
+                .sorted()
+                .toList());
         response.setPermissions(role.getPermissions().stream()
                 .map(permission -> permission.getName())
                 .sorted()

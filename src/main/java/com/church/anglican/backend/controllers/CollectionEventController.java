@@ -46,6 +46,20 @@ public class CollectionEventController {
         return ResponseEntity.ok(mapPage(events));
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<CollectionEventResponse> update(
+            @PathVariable UUID id,
+            @Valid @RequestBody CreateCollectionEventRequest request
+    ) {
+        return ResponseEntity.ok(toResponse(collectionEventService.update(id, request)));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable UUID id) {
+        collectionEventService.delete(id);
+        return ResponseEntity.noContent().build();
+    }
+
     private Page<CollectionEventResponse> mapPage(Page<CollectionEvent> page) {
         return new PageImpl<>(
                 page.getContent().stream().map(this::toResponse).toList(),

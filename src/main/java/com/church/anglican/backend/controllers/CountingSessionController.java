@@ -56,6 +56,20 @@ public class CountingSessionController {
         return ResponseEntity.ok(mapSessionPage(sessions));
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<CountingSessionResponse> update(
+            @PathVariable UUID id,
+            @Valid @RequestBody CreateCountingSessionRequest request
+    ) {
+        return ResponseEntity.ok(toResponse(countingSessionService.update(id, request)));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable UUID id) {
+        countingSessionService.delete(id);
+        return ResponseEntity.noContent().build();
+    }
+
     @PostMapping("/{id}/participants")
     public ResponseEntity<CountingParticipantResponse> addParticipant(
             @PathVariable UUID id,

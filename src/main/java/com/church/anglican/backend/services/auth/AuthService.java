@@ -69,6 +69,14 @@ public class AuthService {
         userResponse.setFirstName(user.getPerson().getFirstName());
         userResponse.setLastName(user.getPerson().getLastName());
         userResponse.setImageUrl(user.getPerson().getImageUrl());
+        List<java.util.UUID> churchIds = user.getRoles().stream()
+                .map(AppRole::getChurch)
+                .filter(church -> church != null && church.getId() != null)
+                .map(church -> church.getId())
+                .distinct()
+                .collect(Collectors.toList());
+        userResponse.setChurchIds(churchIds);
+        userResponse.setPrimaryChurchId(churchIds.stream().findFirst().orElse(null));
         List<String> roles = user.getRoles().stream()
                 .map(AppRole::getName)
                 .collect(Collectors.toList());

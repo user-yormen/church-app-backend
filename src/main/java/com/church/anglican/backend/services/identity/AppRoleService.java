@@ -10,4 +10,6 @@ public interface AppRoleService {
     AppRole createRole(CreateAppRoleRequest createRoleRequest);
     AppRole findById(UUID id);
     List<AppRole> findByChurchId(UUID churchId);
+    AppRole updateRole(UUID id, CreateAppRoleRequest request);
+    void deleteRole(UUID id);
 }

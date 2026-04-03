@@ -46,4 +46,19 @@ public class GroupServiceImpl implements GroupService {
         }
         return groupRepository.findAll(spec, pageable);
     }
+
+    @Override
+    public Group update(UUID id, Group input) {
+        Group group = findById(id);
+        group.setName(input.getName());
+        group.setDescription(input.getDescription());
+        group.setType(input.getType());
+        group.setStatus(input.getStatus());
+        return groupRepository.save(group);
+    }
+
+    @Override
+    public void delete(UUID id) {
+        groupRepository.delete(findById(id));
+    }
 }

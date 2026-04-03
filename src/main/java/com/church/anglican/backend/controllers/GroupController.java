@@ -4,6 +4,7 @@ import com.church.anglican.backend.dto.identity.AddGroupMemberRequest;
 import com.church.anglican.backend.dto.identity.CreateGroupRequest;
 import com.church.anglican.backend.dto.identity.GroupMemberResponse;
 import com.church.anglican.backend.dto.identity.GroupResponse;
+import com.church.anglican.backend.dto.identity.UpdateGroupMemberRequest;
 import com.church.anglican.backend.entities.identity.Church;
 import com.church.anglican.backend.entities.identity.Group;
 import com.church.anglican.backend.entities.identity.GroupMember;
@@ -64,6 +65,22 @@ public class GroupController {
         return ResponseEntity.ok(mapGroupPage(groups));
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<GroupResponse> update(@PathVariable UUID id, @Valid @RequestBody CreateGroupRequest request) {
+        Group group = new Group();
+        group.setName(request.getName());
+        group.setDescription(request.getDescription());
+        group.setType(request.getType());
+        group.setStatus(request.getStatus() != null ? request.getStatus() : Group.GroupStatus.ACTIVE);
+        return ResponseEntity.ok(toGroupResponse(groupService.update(id, group)));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable UUID id) {
+        groupService.delete(id);
+        return ResponseEntity.noContent().build();
+    }
+
     @PostMapping("/{groupId}/members")
     public ResponseEntity<GroupMember> addMember(@PathVariable UUID groupId, @Valid @RequestBody AddGroupMemberRequest request) {
         Group group = new Group();
@@ -91,6 +108,27 @@ public class GroupController {
     ) {
         Page<GroupMember> members = groupMemberService.list(groupId, personId, status, duesStatus, pageable);
         return ResponseEntity.ok(mapGroupMemberPage(members));
+    }
+
+    @PutMapping("/{groupId}/members/{memberId}")
+    public ResponseEntity<GroupMemberResponse> updateMember(
+            @PathVariable UUID groupId,
+            @PathVariable UUID memberId,
+            @Valid @RequestBody UpdateGroupMemberRequest request
+    ) {
+        GroupMember member = new GroupMember();
+        member.setStatus(request.getStatus());
+        member.setDuesStatus(request.getDuesStatus());
+        member.setJoinedAt(request.getJoinedAt());
+        member.setLeftAt(request.getLeftAt());
+        member.setDuesPaidThrough(request.getDuesPaidThrough());
+        return ResponseEntity.ok(toGroupMemberResponse(groupMemberService.update(groupId, memberId, member)));
+    }
+
+    @DeleteMapping("/{groupId}/members/{memberId}")
+    public ResponseEntity<Void> deleteMember(@PathVariable UUID groupId, @PathVariable UUID memberId) {
+        groupMemberService.delete(groupId, memberId);
+        return ResponseEntity.noContent().build();
     }
 
     private Page<GroupResponse> mapGroupPage(Page<Group> page) {
@@ -127,6 +165,9 @@ public class GroupController {
         response.setId(member.getId());
         response.setGroupId(member.getGroup() != null ? member.getGroup().getId() : null);
         response.setPersonId(member.getPerson() != null ? member.getPerson().getId() : null);
+        response.setPersonName(member.getPerson() != null ? member.getPerson().getFullName() : null);
+        response.setPersonEmailAddress(member.getPerson() != null ? member.getPerson().getEmailAddress() : null);
+        response.setPersonPhoneNumber(member.getPerson() != null ? member.getPerson().getPhoneNumber() : null);
         response.setStatus(member.getStatus());
         response.setDuesStatus(member.getDuesStatus());
         response.setJoinedAt(member.getJoinedAt());

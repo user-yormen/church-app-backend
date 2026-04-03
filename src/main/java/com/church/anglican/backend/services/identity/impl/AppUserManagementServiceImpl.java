@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -66,6 +67,57 @@ public class AppUserManagementServiceImpl implements AppUserManagementService {
         user.setPerson(person);
         user.setRoles(roles);
         return appUserRepository.save(user);
+    }
+
+    @Override
+    public List<AppUser> listUsers(UUID churchId) {
+        Church church = churchRepository.findById(churchId)
+                .orElseThrow(() -> new NotFoundException("Church not found with id: " + churchId));
+        AppUser actor = requireAuthenticatedUser();
+        validateActorCanManageChurch(actor, church);
+        return appUserRepository.findDistinctByChurchId(churchId);
+    }
+
+    @Override
+    public AppUser updateUser(UUID userId, boolean enabled, Set<UUID> roleIds) {
+        AppUser actor = requireAuthenticatedUser();
+        AppUser user = appUserRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException("User not found with id: " + userId));
+        UUID churchId = user.getRoles().stream()
+                .map(AppRole::getChurch)
+                .filter(church -> church != null && church.getId() != null)
+                .map(Church::getId)
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("User is not linked to a church"));
+        Church church = churchRepository.findById(churchId)
+                .orElseThrow(() -> new NotFoundException("Church not found with id: " + churchId));
+        validateActorCanManageChurch(actor, church);
+
+        Set<AppRole> roles = new LinkedHashSet<>();
+        if (roleIds != null && !roleIds.isEmpty()) {
+            roleIds.forEach(roleId -> roles.add(resolveRoleById(church, roleId)));
+            validateActorCanAssignRoles(actor, church, roles);
+            user.setRoles(roles);
+        }
+        user.setEnabled(enabled);
+        return appUserRepository.save(user);
+    }
+
+    @Override
+    public void deleteUser(UUID userId) {
+        AppUser actor = requireAuthenticatedUser();
+        AppUser user = appUserRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException("User not found with id: " + userId));
+        UUID churchId = user.getRoles().stream()
+                .map(AppRole::getChurch)
+                .filter(church -> church != null && church.getId() != null)
+                .map(Church::getId)
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("User is not linked to a church"));
+        Church church = churchRepository.findById(churchId)
+                .orElseThrow(() -> new NotFoundException("Church not found with id: " + churchId));
+        validateActorCanManageChurch(actor, church);
+        appUserRepository.delete(user);
     }
 
     private Person resolvePerson(CreateAppUserRequest request) {

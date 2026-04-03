@@ -11,6 +11,9 @@ public class MembershipResponse {
     private UUID id;
     private UUID personId;
     private UUID churchId;
+    private String personName;
+    private String personEmailAddress;
+    private String personPhoneNumber;
     private LocalDateTime joinDate;
     private LocalDateTime leaveDate;
     private ChurchMembership.MembershipStatus status;

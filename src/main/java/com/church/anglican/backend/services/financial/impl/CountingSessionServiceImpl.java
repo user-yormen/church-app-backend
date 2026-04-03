@@ -57,4 +57,29 @@ public class CountingSessionServiceImpl implements CountingSessionService {
     public Page<CountingSession> list(UUID collectionEventId, Pageable pageable) {
         return countingSessionRepository.findByCollectionEventId(collectionEventId, pageable);
     }
+
+    @Override
+    public CountingSession update(UUID id, CreateCountingSessionRequest request) {
+        CountingSession session = findById(id);
+        session.setCountingMethod(request.getCountingMethod());
+        session.setStartTime(request.getStartTime());
+        session.setEndTime(request.getEndTime());
+        session.setStatus(request.getStatus());
+        CountingSession saved = countingSessionRepository.save(session);
+        auditLogService.log(
+                request.getActorPersonId(),
+                request.getActorRoleId(),
+                "UPDATE_COUNTING_SESSION",
+                "CountingSession",
+                saved.getId(),
+                null,
+                "status=" + saved.getStatus()
+        );
+        return saved;
+    }
+
+    @Override
+    public void delete(UUID id) {
+        countingSessionRepository.delete(findById(id));
+    }
 }

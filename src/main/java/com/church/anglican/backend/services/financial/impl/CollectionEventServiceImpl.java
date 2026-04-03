@@ -52,4 +52,23 @@ public class CollectionEventServiceImpl implements CollectionEventService {
         }
         return collectionEventRepository.findByChurchId(churchId, pageable);
     }
+
+    @Override
+    public CollectionEvent update(UUID id, CreateCollectionEventRequest request) {
+        CollectionEvent event = findById(id);
+        CollectionType type = new CollectionType();
+        type.setId(request.getCollectionTypeId());
+        event.setCollectionType(type);
+        event.setServiceReference(request.getServiceReference());
+        event.setEventDate(request.getEventDate());
+        event.setLocation(request.getLocation());
+        event.setCurrency(request.getCurrency());
+        event.setStatus(request.getStatus());
+        return collectionEventRepository.save(event);
+    }
+
+    @Override
+    public void delete(UUID id) {
+        collectionEventRepository.delete(findById(id));
+    }
 }

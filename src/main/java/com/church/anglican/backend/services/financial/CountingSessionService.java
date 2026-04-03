@@ -11,4 +11,6 @@ public interface CountingSessionService {
     CountingSession create(CreateCountingSessionRequest request);
     CountingSession findById(UUID id);
     Page<CountingSession> list(UUID collectionEventId, Pageable pageable);
+    CountingSession update(UUID id, CreateCountingSessionRequest request);
+    void delete(UUID id);
 }

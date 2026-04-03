@@ -13,6 +13,8 @@ public class AuthUserResponse {
     private String firstName;
     private String lastName;
     private String imageUrl;
+    private UUID primaryChurchId;
+    private List<UUID> churchIds;
     private List<String> roles;
     private List<String> roleIdentifiers;
     private List<String> permissions;

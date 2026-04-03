@@ -11,4 +11,6 @@ public interface CollectionEventService {
     CollectionEvent create(CreateCollectionEventRequest request);
     CollectionEvent findById(UUID id);
     Page<CollectionEvent> list(UUID churchId, CollectionEvent.CollectionEventStatus status, Pageable pageable);
+    CollectionEvent update(UUID id, CreateCollectionEventRequest request);
+    void delete(UUID id);
 }
